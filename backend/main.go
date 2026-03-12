@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"os"
 )
 
 func main() {
@@ -40,5 +41,10 @@ func main() {
 	app.Get("/api/petugas-stats", controllers.GetPetugasStats)
 	app.Post("/api/petugas-salary", controllers.PayPetugasSalary)
 
-	app.Listen(":8000") // Run on port 8000
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+	app.Listen(":" + port)
 }
+
