@@ -34,7 +34,7 @@ func ConnectDB() {
 		host := u.Hostname()
 		port := u.Port()
 		dbName := strings.TrimPrefix(u.Path, "/")
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&tls=true",
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&tls=skip-verify",
 			u.User.Username(), password, host, port, dbName)
 	}
 
