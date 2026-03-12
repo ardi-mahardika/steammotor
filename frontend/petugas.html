@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petugas – SteamMotor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: var(--transition);
+            border-radius: 8px;
+        }
+        .tab-btn.active {
+            color: var(--accent);
+            background: rgba(124, 58, 237, 0.1);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .status-paid { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .status-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .status-unpaid { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><i class="fas fa-motorcycle"></i></div>
+                <span>SteamMotor</span>
+            </div>
+            <div class="sidebar-section-label">Menu</div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="transactions.html">
+                    <i class="fas fa-receipt"></i> Transaksi
+                </a>
+                <a href="pengeluaran.html">
+                    <i class="fas fa-file-invoice-dollar"></i> Pengeluaran
+                </a>
+                <a href="laporan.html">
+                    <i class="fas fa-chart-pie"></i> Laporan
+                </a>
+                <a href="petugas.html" class="active">
+                    <i class="fas fa-user-tie"></i> Petugas
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" style="display:flex;align-items:center;gap:0.75rem;color:var(--danger);padding:0.7rem 0.9rem;border-radius:8px;text-decoration:none;font-size:0.875rem;font-weight:600;transition:var(--transition);">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main-content">
+            <header class="topbar">
+                <h2><i class="fas fa-user-tie" style="margin-right:0.5rem;opacity:0.6;font-size:0.9rem;"></i>Manajemen Petugas</h2>
+                <div class="user-chip">Admin</div>
+            </header>
+
+            <div class="content">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('tab-daftar')">Daftar Petugas</button>
+                    <button class="tab-btn" onclick="switchTab('tab-gaji')">Rekapitulasi Gaji</button>
+                </div>
+
+                <!-- Tab Daftar Petugas -->
+                <div id="tab-daftar" class="tab-content active">
+                    <div class="card">
+                        <div class="card-header">
+                            <button id="btn-add-petugas" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i> Tambah Petugas
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nama Petugas</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="petugas-body">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Rekap Gaji -->
+                <div id="tab-gaji" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Hitungan Gaji (Rp 5.000 / Motor)</h3>
+                            <div class="search-filters">
+                                <input type="month" id="filter-month-salary" class="form-control" style="width:auto;">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nama Petugas</th>
+                                        <th>Motor Dicuci</th>
+                                        <th>Total Gaji</th>
+                                        <th>Status Pembayaran</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salary-body">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Petugas -->
+    <div class="modal" id="petugas-modal">
+        <div class="modal-content">
+            <h2 id="petugas-modal-title">Tambah Petugas</h2>
+            <form id="petugas-form" style="margin-top:1.5rem;">
+                <div class="form-group">
+                    <label for="p-nama">Nama Petugas <span style="color:var(--danger);">*</span></label>
+                    <input type="text" id="p-nama" class="form-control" required placeholder="Contoh: Budi Santoso">
+                </div>
+                <div class="form-group">
+                    <label for="p-aktif">Status</label>
+                    <select id="p-aktif" class="form-control">
+                        <option value="1">Aktif</option>
+                        <option value="0">Non-Aktif</option>
+                    </select>
+                </div>
+                <div class="action-buttons" style="margin-top:1.5rem;justify-content:flex-end;gap:0.75rem;">
+                    <button type="button" onclick="closePetugasModal()" class="btn btn-sm btn-accent" style="background:none;">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            if (tabId === 'tab-gaji') {
+                const filter = document.getElementById('filter-month-salary').value;
+                loadPetugasStats(filter);
+            } else {
+                loadPetugases();
+            }
+        }
+    </script>
+</body>
+</html>

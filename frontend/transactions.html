@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi – SteamMotor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><i class="fas fa-motorcycle"></i></div>
+                <span>SteamMotor</span>
+            </div>
+            <div class="sidebar-section-label">Menu</div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="transactions.html" class="active">
+                    <i class="fas fa-receipt"></i> Transaksi
+                </a>
+                <a href="pengeluaran.html">
+                    <i class="fas fa-file-invoice-dollar"></i> Pengeluaran
+                </a>
+                <a href="laporan.html">
+                    <i class="fas fa-chart-pie"></i> Laporan
+                </a>
+                <a href="petugas.html">
+                    <i class="fas fa-user-tie"></i> Petugas
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn"
+                    style="display:flex;align-items:center;gap:0.75rem;color:var(--danger);padding:0.7rem 0.9rem;border-radius:8px;text-decoration:none;font-size:0.875rem;font-weight:600;transition:var(--transition);">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main-content">
+            <header class="topbar">
+                <h2><i class="fas fa-receipt" style="margin-right:0.5rem;opacity:0.6;font-size:0.9rem;"></i>Riwayat
+                    Transaksi</h2>
+                <div class="user-chip">Admin</div>
+            </header>
+
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <button id="btn-add" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Tambah Transaksi
+                        </button>
+                        <div class="search-filters">
+                            <input type="date" id="search-date" class="form-control" title="Filter Tanggal">
+                            <input type="text" id="search-nopol" class="form-control"
+                                placeholder="🔍  Cari No Polisi..." style="width:200px;">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>No Polisi</th>
+                                    <th>Pemilik</th>
+                                    <th>Jenis</th>
+                                    <th>Harga</th>
+                                    <th>Petugas</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transaction-body">
+                                <tr>
+                                    <td colspan="6" style="text-align:center;color:var(--text-muted);padding:3rem;">
+                                        <i class="fas fa-spinner fa-spin"
+                                            style="font-size:1.5rem;margin-bottom:0.5rem;display:block;"></i>
+                                        Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Form -->
+    <div class="modal" id="transaction-modal">
+        <div class="modal-content">
+            <h2 id="modal-title" style="margin-bottom:0.4rem;">Tambah Transaksi</h2>
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1.5rem;">
+                <span style="color:#ef4444;font-weight:700;">*</span> Wajib diisi
+            </p>
+            <form id="transaction-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="trx-tanggal">
+                            Tanggal <span style="color:#ef4444;font-weight:700;">*</span>
+                        </label>
+                        <input type="date" id="trx-tanggal" class="form-control" required
+                            style="border-left: 3px solid var(--brand-from);">
+                        <small style="color:var(--text-muted);font-size:0.72rem;display:block;margin-top:0.3rem;">Hanya
+                            hari ini</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="trx-nopol">
+                            No Polisi <span style="color:#ef4444;font-weight:700;">*</span>
+                        </label>
+                        <input type="text" id="trx-nopol" class="form-control" placeholder="B 1234 ABC" required
+                            style="border-left: 3px solid var(--brand-from);"
+                            oninput="this.value = this.value.toUpperCase()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="trx-pemilik">
+                        Nama Pemilik Motor <span style="color:#ef4444;font-weight:700;">*</span>
+                    </label>
+                    <input type="text" id="trx-pemilik" class="form-control" placeholder="Nama lengkap pemilik" required
+                        style="border-left: 3px solid var(--brand-from);">
+                </div>
+
+                <div class="form-group">
+                    <label for="trx-jenis">
+                        Jenis Kendaraan <span style="color:#ef4444;font-weight:700;">*</span>
+                    </label>
+                    <select id="trx-jenis" class="form-control" required
+                        style="border-left: 3px solid var(--brand-from);">
+                        <option value="" disabled>-- Pilih Jenis Kendaraan --</option>
+                        <optgroup label="🏍️  Matic">
+                            <option value="Matic Kecil">Matic Kecil (≤125cc)</option>
+                            <option value="Matic Besar">Matic Besar (>125cc)</option>
+                        </optgroup>
+                        <optgroup label="🏍️  Bebek">
+                            <option value="Motor Bebek">Motor Bebek</option>
+                        </optgroup>
+                        <optgroup label="🏍️  Sport">
+                            <option value="Sport CC Kecil">Sport CC Kecil (≤150cc)</option>
+                            <option value="Sport CC Besar">Sport CC Besar (>250cc)</option>
+                        </optgroup>
+                        <optgroup label="🏍️  Lainnya">
+                            <option value="Cruiser">Cruiser</option>
+                            <option value="Motor Besar">Motor Besar / Big Bike</option>
+                        </optgroup>
+                        <optgroup label="🚗  Mobil">
+                            <option value="Mobil Kecil">Mobil Kecil</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="trx-harga">
+                        Harga (Rp) <span style="color:#ef4444;font-weight:700;">*</span>
+                    </label>
+                    <input type="number" id="trx-harga" class="form-control" min="0" placeholder="Otomatis terisi"
+                        required style="border-left: 3px solid var(--brand-from);">
+                </div>
+
+                <div class="form-group">
+                    <label for="trx-petugas">
+                        Nama Petugas <span style="color:#ef4444;font-weight:700;">*</span>
+                    </label>
+                    <select id="trx-petugas" class="form-control" required
+                        style="border-left: 3px solid var(--brand-from);">
+                        <option value="" disabled selected>-- Pilih Petugas --</option>
+                    </select>
+                </div>
+
+                <div class="action-buttons" style="margin-top:1.75rem;justify-content:flex-end;gap:0.75rem;">
+                    <button type="button" id="btn-cancel" class="btn btn-sm"
+                        style="background:var(--surface);color:var(--text-muted);border:1px solid var(--glass-border);width:auto;">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

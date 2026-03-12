@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengeluaran – SteamMotor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><i class="fas fa-motorcycle"></i></div>
+                <span>SteamMotor</span>
+            </div>
+            <div class="sidebar-section-label">Menu</div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="transactions.html">
+                    <i class="fas fa-receipt"></i> Transaksi
+                </a>
+                <a href="pengeluaran.html" class="active">
+                    <i class="fas fa-file-invoice-dollar"></i> Pengeluaran
+                </a>
+                <a href="laporan.html">
+                    <i class="fas fa-chart-pie"></i> Laporan
+                </a>
+                <a href="petugas.html">
+                    <i class="fas fa-user-tie"></i> Petugas
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" style="display:flex;align-items:center;gap:0.75rem;color:var(--danger);padding:0.7rem 0.9rem;border-radius:8px;text-decoration:none;font-size:0.875rem;font-weight:600;transition:var(--transition);">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main-content">
+            <header class="topbar">
+                <h2><i class="fas fa-file-invoice-dollar" style="margin-right:0.5rem;opacity:0.6;font-size:0.9rem;"></i>Pengeluaran</h2>
+                <div class="user-chip">Admin</div>
+            </header>
+
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <button id="btn-add-exp" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Tambah Pengeluaran
+                        </button>
+                        <div class="search-filters">
+                            <input type="month" id="filter-month" class="form-control" title="Filter Bulan" style="width:auto;">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Keterangan</th>
+                                    <th>Jumlah</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expense-body">
+                                <tr>
+                                    <td colspan="4" style="text-align:center;color:var(--text-muted);padding:3rem;">
+                                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:0.5rem;display:block;"></i>
+                                        Memuat data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Total footer -->
+                    <div style="padding:1rem 1.5rem;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:2rem;font-size:0.875rem;color:var(--text-muted);">
+                        <span>Total Pengeluaran Bulan Ini:</span>
+                        <strong id="total-expense-sum" style="color:var(--danger);font-size:1rem;">Rp 0</strong>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Form -->
+    <div class="modal" id="expense-modal">
+        <div class="modal-content">
+            <h2 id="exp-modal-title" style="margin-bottom:0.4rem;">Tambah Pengeluaran</h2>
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1.5rem;">
+                <span style="color:#ef4444;font-weight:700;">*</span> Wajib diisi
+            </p>
+            <form id="expense-form">
+                <div class="form-group">
+                    <label for="exp-tanggal">
+                        Tanggal <span style="color:#ef4444;font-weight:700;">*</span>
+                    </label>
+                    <input type="date" id="exp-tanggal" class="form-control" required
+                        style="border-left: 3px solid var(--brand-from);">
+                </div>
+
+                <div class="form-group">
+                    <label for="exp-keterangan">
+                        Keterangan <span style="color:#ef4444;font-weight:700;">*</span>
+                    </label>
+                    <input type="text" id="exp-keterangan" class="form-control" placeholder="Contoh: Beli sabun, listrik, dll" required
+                        style="border-left: 3px solid var(--brand-from);">
+                </div>
+
+                <div class="form-group">
+                    <label for="exp-jumlah">
+                        Jumlah (Rp) <span style="color:#ef4444;font-weight:700;">*</span>
+                    </label>
+                    <input type="number" id="exp-jumlah" class="form-control" min="0" placeholder="Contoh: 50000" required
+                        style="border-left: 3px solid var(--brand-from);">
+                </div>
+
+                <div class="action-buttons" style="margin-top:1.75rem;justify-content:flex-end;gap:0.75rem;">
+                    <button type="button" id="btn-cancel-exp" class="btn btn-sm"
+                        style="background:var(--surface);color:var(--text-muted);border:1px solid var(--glass-border);width:auto;">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
