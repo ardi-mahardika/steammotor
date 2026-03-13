@@ -370,7 +370,130 @@ document.addEventListener('DOMContentLoaded', () => {
             salaryFilter.addEventListener('change', (e) => loadPetugasStats(e.target.value));
         }
     }
+
+    // Asset page specific
+    if (document.getElementById('asset-body')) {
+        loadAssets();
+        document.getElementById('btn-add-asset').addEventListener('click', () => openAssetModal(false));
+        document.getElementById('asset-form').addEventListener('submit', handleAssetSubmit);
+    }
 });
+
+// ===================== MANAJEMEN ASET =====================
+
+async function loadAssets() {
+    try {
+        const res = await apiFetch('/assets');
+        const data = await res.json();
+        const tbody = document.getElementById('asset-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:3rem;">Belum ada data aset</td></tr>`;
+        } else {
+            data.forEach(as => {
+                const tr = document.createElement('tr');
+                const statusClass = 'status-' + as.status.toLowerCase().replace(/\s+/g, '-');
+                tr.innerHTML = `
+                    <td style="font-weight:700;">${as.nama}</td>
+                    <td>${as.merk || '-'}</td>
+                    <td><span class="status-badge ${statusClass}">${as.status}</span></td>
+                    <td style="font-size:0.82rem;color:var(--text-muted);">${as.tanggal_status || '-'}</td>
+                    <td style="font-size:0.875rem;">${as.keterangan || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="editAsset(${as.id})" class="btn btn-sm btn-accent"><i class="fas fa-pen"></i></button>
+                            <button onclick="deleteAsset(${as.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    } catch (e) { console.error('Failed to load assets', e); }
+}
+
+function openAssetModal(isEdit = false) {
+    document.getElementById('asset-modal-title').textContent = isEdit ? 'Edit Aset' : 'Tambah Aset Baru';
+    if (!isEdit) {
+        document.getElementById('asset-id').value = '';
+        document.getElementById('asset-nama').value = '';
+        document.getElementById('asset-merk').value = '';
+        document.getElementById('asset-status').value = 'Aktif';
+        document.getElementById('asset-ket').value = '';
+        
+        const now = new Date();
+        document.getElementById('asset-tgl').value = now.toISOString().split('T')[0];
+    }
+    document.getElementById('asset-modal').classList.add('active');
+}
+
+function closeAssetModal() {
+    document.getElementById('asset-modal').classList.remove('active');
+}
+
+async function handleAssetSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('asset-id').value;
+    const payload = {
+        nama: document.getElementById('asset-nama').value,
+        merk: document.getElementById('asset-merk').value,
+        status: document.getElementById('asset-status').value,
+        tanggal_status: document.getElementById('asset-tgl').value,
+        keterangan: document.getElementById('asset-ket').value
+    };
+
+    try {
+        let res;
+        if (id) {
+            res = await apiFetch(`/assets/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+        } else {
+            res = await apiFetch('/assets', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+        }
+
+        if (res.ok) {
+            closeAssetModal();
+            loadAssets();
+        } else {
+            alert('Gagal menyimpan aset');
+        }
+    } catch (e) { alert('Error: ' + e.message); }
+}
+
+async function editAsset(id) {
+    try {
+        const res = await apiFetch('/assets');
+        const data = await res.json();
+        const as = data.find(item => item.id === id);
+        if (as) {
+            document.getElementById('asset-id').value = as.id;
+            document.getElementById('asset-nama').value = as.nama;
+            document.getElementById('asset-merk').value = as.merk || '';
+            document.getElementById('asset-status').value = as.status;
+            document.getElementById('asset-tgl').value = as.tanggal_status || '';
+            document.getElementById('asset-ket').value = as.keterangan || '';
+            openAssetModal(true);
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function deleteAsset(id) {
+    if (confirm('Apakah Anda yakin ingin menghapus data aset ini?')) {
+        try {
+            await apiFetch(`/assets/${id}`, { method: 'DELETE' });
+            loadAssets();
+        } catch (e) { alert('Error: ' + e.message); }
+    }
+}
 
 // ===================== PENGELUARAN (EXPENSES) =====================
 
