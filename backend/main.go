@@ -41,6 +41,11 @@ func main() {
 	app.Get("/api/petugas-stats", controllers.GetPetugasStats)
 	app.Post("/api/petugas-salary", controllers.PayPetugasSalary)
 
+	app.Get("/api/assets", controllers.GetAssets)
+	app.Post("/api/assets", controllers.CreateAsset)
+	app.Put("/api/assets/:id", controllers.UpdateAsset)
+	app.Delete("/api/assets/:id", controllers.DeleteAsset)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"

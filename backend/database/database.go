@@ -51,7 +51,7 @@ func ConnectDB() {
 	}
 
 	// Migrate the schema (Auto-creates tables if they don't exist)
-	err = db.AutoMigrate(&models.User{}, &models.Transaction{}, &models.Expense{}, &models.Petugas{})
+	err = db.AutoMigrate(&models.User{}, &models.Transaction{}, &models.Expense{}, &models.Petugas{}, &models.Asset{})
 	if err != nil {
 		log.Fatal("Failed to migrate database schema. \n", err)
 	}

@@ -38,3 +38,13 @@ type Petugas struct {
 func (Petugas) TableName() string {
 	return "petugases"
 }
+
+type Asset struct {
+	ID            uint      `json:"id" gorm:"primaryKey"`
+	Nama          string    `json:"nama"`
+	Merk          string    `json:"merk"`
+	Status        string    `json:"status"` // Aktif, Perlu Servis, Sedang Servis, Rusak
+	TanggalStatus string    `json:"tanggal_status"` // YYYY-MM-DD
+	Keterangan    string    `json:"keterangan"`
+	CreatedAt     time.Time `json:"created_at"`
+}
